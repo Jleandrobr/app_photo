@@ -1,6 +1,7 @@
 package com.example.photo
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -12,6 +13,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvFoto: TextView
     private lateinit var imgView: ImageView
     private lateinit var btnFoto: Button
+    private val REQUEST_IMAGE_CAPTURE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +31,16 @@ class MainActivity : AppCompatActivity() {
     fun chamarCamera(){
         val intet = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         if (intet.resolveActivity(packageManager) != null){
-            startActivity(intet)
+            startActivityForResult(intet, REQUEST_IMAGE_CAPTURE)
         }
 
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
+            val imagemBitmap = data?.extras?.get("data") as Bitmap
+            this.imgView.setImageBitmap(imagemBitmap)
+        }
     }
 }
